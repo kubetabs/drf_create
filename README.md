@@ -76,6 +76,46 @@ AUTH_USER_MODEL = 'users.User'
 
 
 
+## 认证
+
+这里我们使用`jwt`
+
+`pip isntalldjangorestframework-simplejwt`
+
+关于`jwt`的介绍：`https://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html`
+
+`drf_create/urls.py `
+
+```python
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshSlidingView
+from rest_framework_simplejwt.views import TokenVerifyView
+
+urlpatterns = [
+  	# 登录接口
+    path(r'api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+  	# token刷新接口
+    path(r'api/token/refresh/', TokenRefreshSlidingView.as_view(), name='token_refresh'),
+  	# token刷新接口
+    path(r'api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+]
+```
+
+系统配置`jwt`
+
+`drf_create/settings.py`
+
+```python
+REST_FRAMEWORK = {
+    # 认证
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+    		'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+```
+
+
+
 ## 分页
 
 设置系统默认分页
