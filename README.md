@@ -80,7 +80,7 @@ AUTH_USER_MODEL = 'users.User'
 
 这里我们使用`jwt`
 
-`pip isntalldjangorestframework-simplejwt`
+`pip isntall djangorestframework-simplejwt`
 
 关于`jwt`的介绍：`https://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html`
 
