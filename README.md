@@ -179,6 +179,74 @@ class UserViewSet(ModelViewSet):
 
 ## 统一返回格式
 
+前后端分离开发，需要一个统一的返回格式，这里是跟前端约定的返回格式
+
+```json
+{
+	"status": "success",
+	"code": 200,
+	"data": {},
+	"message": null
+}
+```
+
+`status`: `http code 2xx` -> success 其余 error
+
+`code`: http状态码
+
+`data`: 返回数据
+
+`message`: 返回消息，一般都是django默认的http 4xx，http 5xx（如果设置了异常处理）消息
+
+
+
+这里使用`render`做统一格式的返回
+
+`apps/common/rest_framework/render.py`
+
+```python
+from rest_framework.renderers import JSONRenderer
+
+
+class CustomRenderer(JSONRenderer):
+
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        status_code = renderer_context['response'].status_code
+        response = {
+          "status": "success",
+          "code": status_code,
+          "data": data,
+          "message": None
+        }
+
+        if not str(status_code).startswith('2'):
+            response["status"] = "error"
+            response["data"] = None
+            try:
+                if isinstance(data, dict):
+                    response["message"] = data["detail"]
+                if isinstance(data, str):
+                    response["message"] = data
+            except KeyError:
+                response["data"] = data
+
+        return super(CustomRenderer, self).render(response, accepted_media_type, renderer_context)
+
+```
+
+`apps/users/views.py`
+
+```python
+from common.rest_framework import CustomRenderer
+
+
+class UserViewSet(ModelViewSet):
+
+    # ...
+    renderer_classes = [CustomRenderer]
+    # ...
+```
+
 ## 异常处理
 
 ## 异步
