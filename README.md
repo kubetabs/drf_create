@@ -1,5 +1,11 @@
 # Django Rest Frameowk脚手架
 
+```shell
+Python: 3.8.5
+Django: 3.1.7
+djangorestframework: 3.12.2
+```
+
 
 
 ## 认证授权
