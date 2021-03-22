@@ -92,11 +92,11 @@ from rest_framework_simplejwt.views import TokenRefreshSlidingView
 from rest_framework_simplejwt.views import TokenVerifyView
 
 urlpatterns = [
-		# 登录接口
+    # 登录接口
     path(r'api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-  	# token刷新接口
+    # token刷新接口
     path(r'api/token/refresh/', TokenRefreshSlidingView.as_view(), name='token_refresh'),
-		# token刷新接口
+    # token刷新接口
     path(r'api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 ]
 ```
@@ -109,7 +109,7 @@ urlpatterns = [
 REST_FRAMEWORK = {
     # 认证
     'DEFAULT_AUTHENTICATION_CLASSES': [
-    		'rest_framework_simplejwt.authentication.JWTAuthentication',
+	    'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 ```
