@@ -249,5 +249,82 @@ class UserViewSet(ModelViewSet):
 
 ## 异常处理
 
+官方文档：`https://www.django-rest-framework.org/api-guide/exceptions/`
+
+`REST Framework`处理三种异常
+
++ `APIException`
+
++ `Http404`
+
++ `PermissionDenied`
+
+如果你想在程序运行发生网关错误500的时候能返回自定义的格式，而不是页面报错，这个时候就可以自定义异常处理捕捉到这个500
+
+`apps/common/rest_framework/exception.py`
+
+  ```python
+from rest_framework.views import exception_handler
+from rest_framework.response import Response
+from rest_framework import status
+# import traceback
+
+
+def custom_exception_handler(exc, context):
+  """
+      自定义的异常处理
+      :param exc:     本次请求发送的异常信息
+      :param context: 本次请求发送异常的执行上下文【本次请求的request对象，异常发送的时间，行号等....】
+      :return:
+      """
+
+  response = exception_handler(exc, context)
+
+  # 5xx错误
+  if response is None:
+    # trace_info = traceback.format_exc()
+    response = Response('服务器异常', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return response
+  
+  ```
+
+配置
+
+`drf_create/settings.py`
+
+```python
+REST_FRAMEWORK = {
+  	# 异常处理
+  	# 'EXCEPTION_HANDLER': 'common.rest_framework.custom_exception_handler'
+}
+```
+
+模拟
+
+`apps/users/views.py`
+
+```python
+class UserViewSet(ModelViewSet):
+  	# ...
+    @action(detail=False, methods=['get'])
+    def test(self, request, *args, **kwargs):
+        print(acd)
+        raise ValidationError({"detail": "here raise"})
+```
+
+`curl http://127.0.0.1:8000/api/user/test/`
+
+```json
+{
+	"status": "error",
+	"code": 500,
+	"data": null,
+	"message": "服务器异常"
+}
+```
+
+
+
 ## 异步
 
