@@ -296,7 +296,7 @@ def custom_exception_handler(exc, context):
 ```python
 REST_FRAMEWORK = {
   	# 异常处理
-  	# 'EXCEPTION_HANDLER': 'common.rest_framework.custom_exception_handler'
+  	'EXCEPTION_HANDLER': 'common.rest_framework.custom_exception_handler'
 }
 ```
 
