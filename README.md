@@ -173,7 +173,11 @@ class UserViewSet(ModelViewSet):
 
 请求第一页显示2个数据
 
-`curl  http://127.0.0.1:8000/api/user/?page=1&page_size=2`
+`curl  http://127.0.0.1:8000/api/user/?page=1&page_size=3`
+
+```json
+{"status":"success","code":200,"data":{"count":13,"results":[{"id":1,"password":"pbkdf2_sha256$216000$vqNb07ePw5lH$RRvZJhCpKOB3stA9DVkem7SU3aA8fhEdvAg0/ymD6TM=","last_login":null,"is_superuser":true,"username":"admin","first_name":"","last_name":"","email":"admin@plsof.com","is_staff":true,"is_active":true,"date_joined":"2021-03-16T09:19:09.296545Z","telephone":"","groups":[],"user_permissions":[]},{"id":2,"password":"pbkdf2_sha256$216000$bYJzRb64QR1y$Mdrt7ArEORnDxbnCsF4jXSjkYPw1Gs3BDJ/sSgMXuZQ=","last_login":null,"is_superuser":false,"username":"p1","first_name":"","last_name":"","email":"p1@plsof.com","is_staff":false,"is_active":true,"date_joined":"2021-03-22T06:38:53.365624Z","telephone":null,"groups":[],"user_permissions":[]},{"id":3,"password":"pbkdf2_sha256$216000$3W00k9Zwgj10$yIPcWSQkvLozva2Kq+L1CvlLCaMnomoiszPtxTdRSeY=","last_login":null,"is_superuser":false,"username":"p2","first_name":"","last_name":"","email":"p2@plsof.com","is_staff":false,"is_active":true,"date_joined":"2021-03-22T06:40:21.859173Z","telephone":null,"groups":[],"user_permissions":[]}]},"message":null}
+```
 
 
 
