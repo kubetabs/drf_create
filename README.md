@@ -114,6 +114,56 @@ REST_FRAMEWORK = {
 }
 ```
 
+### 授权
+
+官方文档：`https://www.django-rest-framework.org/api-guide/permissions/`
+
+`Django REST Framework提供的常见几种权限`
+
+#### AllowAny
+
+没有限制，无论请求是否做了认证
+
+#### IsAuthenticated
+
+请求必须做了认证
+
+#### IsAdminUser
+
+`admin`用户才有权限(user.is_staff = True)
+
+#### IsAuthenticatedOrReadOnly
+
+认证的用户有权限访问所有接口，未认证的用户只能访问只读接口(`GET` `HEAD` `OPTIONS`)
+
+系统全局设置
+
+```python
+REST_FRAMEWORK = {
+    # 权限
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+```
+
+`viewset`的各action设置不同的权限
+
+`apps/users/views.py`
+
+```python
+class UserViewSet(ModelViewSet):
+    # ...
+    permission_classes_by_action = {
+        'create': [AllowAny],
+    }
+    # ...
+    def get_permissions(self):
+        try:
+    	    return [permission() for permission in self.permission_classes_by_action[self.action]]
+        except KeyError:
+    	    return [permission() for permission in self.permission_classes]
+```
 
 
 ## 分页
