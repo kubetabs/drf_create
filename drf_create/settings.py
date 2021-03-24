@@ -26,7 +26,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 SECRET_KEY = '581r*2u5)$*w71kq40ek*bu!1c0v^h&-=@fug+65rc=n9p^pes'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -58,9 +58,9 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     # 权限
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     # 认证
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -70,7 +70,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'common.rest_framework.CustomPagination',
     'PAGE_SIZE': 10,
     # 异常处理
-    # 'EXCEPTION_HANDLER': 'common.rest_framework.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'common.rest_framework.custom_exception_handler'
 }
 
 ROOT_URLCONF = 'drf_create.urls'
@@ -105,7 +105,7 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gin_create',
+        'NAME': 'drf_create',
         'USER': 'root',
         'PASSWORD': 'plsof@2021',
         'HOST': 'mysql',
@@ -155,3 +155,66 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# 日志
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s [ %(message)s] %(asctime)s %(pathname)s %(filename)s'
+                      '%(module)s %(funcName)s %(lineno)d'
+        },
+        'standard': {
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'format': '%(asctime)s [%(module)s %(levelname)s %(lineno)d] %(message)s',
+        }
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': '/tmp/django.log',
+            'formatter': 'standard'
+        },
+        'file_debug': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.FileHandler',
+            'filename': '/tmp/django.log',
+            'formatter': 'verbose'
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+        'console_debug': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        # 'django': {
+        #     'handlers': ['console', 'console_debug'],
+        #     'level': 'DEBUG',
+        #     'propagate': True,
+        # },
+        'default': {
+            'handlers': ['file', 'file_debug'],
+            'level': 'DEBUG',
+            'propagate': True
+        }
+    }
+}
+
+DEFAULT_LOGGER = 'default'
+
