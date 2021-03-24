@@ -4,7 +4,10 @@ from rest_framework import status
 import traceback
 import logging
 
-logger = logging.getLogger("DEFAULT_LOGGER")
+from drf_create.settings import DEFAULT_LOGGER
+
+
+logger = logging.getLogger(DEFAULT_LOGGER)
 
 
 def custom_exception_handler(exc, context):

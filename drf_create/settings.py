@@ -209,7 +209,7 @@ LOGGING = {
         #     'propagate': True,
         # },
         'default': {
-            'handlers': ['file', 'file_debug'],
+            'handlers': ['console', 'console_debug'],
             'level': 'DEBUG',
             'propagate': True
         }
@@ -218,3 +218,6 @@ LOGGING = {
 
 DEFAULT_LOGGER = 'default'
 
+
+# 日志目录
+DEPLOY_LOG_PATH = '/tmp'
