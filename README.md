@@ -484,3 +484,11 @@ async def log_consumer(scope, receive, send):
 
 `uvicorn drf_create.asgi:application --reload --debug --ws websockets`
 
+请求
+
+`ws:127.0.0.1:8000`
+
+```json
+{"task_id": "123"}
+```
+
