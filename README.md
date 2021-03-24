@@ -386,6 +386,8 @@ Django3.0开始支持异步ASGI
 
 ### websocket
 
+案例：查看日志文件最新内容（类型tail -f /tmp/xxx_log）
+
 `drf_create/asgi.py`
 
 ```python
