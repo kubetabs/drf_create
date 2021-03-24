@@ -382,3 +382,103 @@ class UserViewSet(ModelViewSet):
 
 ## 异步
 
+Django3.0开始支持异步ASGI
+
+### websocket
+
+`drf_create/asgi.py`
+
+```python
+"""
+ASGI config for drf_create project.
+
+It exposes the ASGI callable as a module-level variable named ``application``.
+
+For more information on this file, see
+https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
+"""
+
+import os
+
+from django.core.asgi import get_asgi_application
+
+from .websocket import log_consumer
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'drf_create.settings')
+
+django_application = get_asgi_application()
+
+
+async def application(scope, receive, send):
+    if scope['type'] == 'http':
+        await django_application(scope, receive, send)
+    elif scope['type'] == 'websocket':
+        await log_consumer(scope, receive, send)
+    else:
+        raise NotImplementedError(f"Unknown scope type {scope['type']}")
+
+```
+
+
+
+`drf_create/websocket.py`
+
+```python
+import os
+import tailer
+import json
+from django.conf import settings
+from threading import Thread
+import asyncio
+
+
+async def tail_log(task_id, send):
+    log_file_path = os.path.join(settings.DEPLOY_LOG_PATH, f'{task_id}_log')
+    if os.path.exists(log_file_path):
+        for line in tailer.follow(open(log_file_path)):
+            await send({
+                'type': 'websocket.send',
+                'text': json.dumps(line)
+            })
+    else:
+        await send({
+            'type': 'websocket.send',
+            'text': json.dumps(f'{log_file_path} not exist')
+        })
+
+
+async def log_consumer(scope, receive, send):
+
+    while True:
+        event = await receive()
+
+        if event['type'] == 'websocket.connect':
+            await send({
+                'type': 'websocket.accept',
+                'text': json.dumps("waiting for task log...")
+            })
+
+        if event['type'] == 'websocket.receive':
+            task_id = json.loads(event['text']).get('task_id', None)
+
+            if not task_id:
+                await send({
+                    'type': 'websocket.send',
+                    'text': json.dumps("task_id为空，请输入task_id")
+                })
+
+            t = Thread(target=asyncio.run, args=(tail_log(task_id, send),))
+            t.start()
+
+        if event['type'] == 'websocket.disconnect':
+            await send({
+                'type': 'websocket.close'
+            })
+            break
+
+```
+
+运行
+
+`uvicorn drf_create.asgi:application --reload --debug --ws websockets`
+
